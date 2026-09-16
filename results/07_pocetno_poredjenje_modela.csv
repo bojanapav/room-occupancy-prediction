@@ -1,0 +1,10 @@
+model,postavka,macroF1_fold1,macroF1_fold2,macroF1_prosek,balanced_acc,accuracy,vreme_s
+RandomForest,balanced,0.5918,0.708,0.6499,0.6685,0.8761,0.3
+DecisionTree,balanced,0.5376,0.7281,0.6329,0.6914,0.8816,0.01
+RandomForest,podrazumevano,0.5393,0.6786,0.6089,0.6724,0.8465,0.29
+LogisticRegression,podrazumevano,0.5187,0.6733,0.596,0.5816,0.8502,0.08
+DecisionTree,podrazumevano,0.5811,0.6011,0.5911,0.7052,0.8432,0.01
+LogisticRegression,balanced,0.5003,0.6708,0.5856,0.6049,0.8428,0.09
+XGBoost,podrazumevano,0.5199,0.6505,0.5852,0.6156,0.8586,0.38
+XGBoost,balanced,0.4789,0.6119,0.5454,0.567,0.837,0.35
+Baseline (najcesca klasa),podrazumevano,0.2253,0.2182,0.2218,0.25,0.7973,0.0

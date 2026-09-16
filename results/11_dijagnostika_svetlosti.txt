@@ -1,0 +1,100 @@
+DIJAGNOSTICKA PROVERA: SVETLOST - INFORMACIJA ILI PRECICA?
+Dodatak fazi 8; nije nova faza projekta
+
+Development : 6608 redova, sesije [0, 1, 4, 5, 7]
+Test skup   : ZAKLJUCAN, nije ucitan
+Model       : DecisionTree sa hiperparametrima iz faze 7, NEPROMENJEN
+  {'class_weight': 'balanced', 'criterion': 'entropy', 'max_depth': 3, 'min_samples_leaf': 5, 'min_samples_split': 2}
+CV          : usvojena podela, grupa = sesija_id, 2 folda
+
+Menja se samo skup atributa. Hiperparametri se NE podesavaju posebno
+ni za jednu varijantu - to bi pokvarilo kontrolisano poredjenje.
+
+  A) svi senzori (16)
+     ['S1_Temp', 'S2_Temp', 'S3_Temp', 'S4_Temp', 'S1_Light', 'S2_Light', 'S3_Light', 'S4_Light', 'S1_Sound', 'S2_Sound', 'S3_Sound', 'S4_Sound', 'S5_CO2', 'S5_CO2_Slope', 'S6_PIR', 'S7_PIR']
+  B) izabrani (5)
+     ['S2_Light', 'S1_Light', 'S3_Light', 'S4_Light', 'S2_Temp']
+  C) bez svetlosti (12)
+     ['S1_Temp', 'S2_Temp', 'S3_Temp', 'S4_Temp', 'S1_Sound', 'S2_Sound', 'S3_Sound', 'S4_Sound', 'S5_CO2', 'S5_CO2_Slope', 'S6_PIR', 'S7_PIR']
+
+==============================================================================
+1. ZBIRNI REZULTATI
+==============================================================================
+                 skup  atributa  F1_fold1  F1_fold2  F1_prosek  razlika_foldova  bal_acc  accuracy
+  A) svi senzori (16)        16    0.6794    0.7031     0.6913           0.0237   0.7583    0.8838
+      B) izabrani (5)         5    0.7116    0.7031     0.7074           0.0085   0.7420    0.8903
+C) bez svetlosti (12)        12    0.4004    0.4272     0.4138           0.0268   0.5543    0.8368
+
+==============================================================================
+2. METRIKE PO KLASAMA
+==============================================================================
+
+--------------------------------------------------------------------------
+A) svi senzori (16)
+--------------------------------------------------------------------------
+       precision  recall     f1  uzoraka
+klasa                                   
+0          0.965   0.954  0.960     5316
+1          0.574   0.994  0.728      331
+2          0.924   0.497  0.646      608
+3          0.323   0.414  0.363      353
+
+--------------------------------------------------------------------------
+B) izabrani (5)
+--------------------------------------------------------------------------
+       precision  recall     f1  uzoraka
+klasa                                   
+0          0.942   0.972  0.957     5316
+1          0.730   0.873  0.795      331
+2          0.924   0.497  0.646      608
+3          0.369   0.414  0.390      353
+
+--------------------------------------------------------------------------
+C) bez svetlosti (12)
+--------------------------------------------------------------------------
+       precision  recall     f1  uzoraka
+klasa                                   
+0          0.983   0.980  0.981     5316
+1          0.176   0.221  0.196      331
+2          0.451   0.240  0.313      608
+3          0.229   0.368  0.282      353
+
+==============================================================================
+3. KLASA 3 - POSEBNO
+==============================================================================
+Klasa 3 je bila najslabija u svim dosadasnjim rezultatima, a upravo su
+njene epizode u development skupu snimane po mraku. Ako je svetlost
+precica, njeno uklanjanje bi ovde trebalo da napravi najvecu razliku.
+
+                       precision  recall     f1
+A) svi senzori (16)        0.323   0.414  0.363
+B) izabrani (5)            0.369   0.414  0.390
+C) bez svetlosti (12)      0.229   0.368  0.282
+
+F1 po klasama, sva tri skupa:
+       A) svi senzori (16)  B) izabrani (5)  C) bez svetlosti (12)
+klasa                                                             
+0                    0.960            0.957                  0.981
+1                    0.728            0.795                  0.196
+2                    0.646            0.646                  0.313
+3                    0.363            0.390                  0.282
+
+==============================================================================
+4. TUMACENJE
+==============================================================================
+Najbolji prosecni macro F1 medju skupovima : 0.7074
+Skup bez svetlosti                         : 0.4138
+Pad u odnosu na najbolji                   : 0.2936
+Razlika izmedju foldova (bez svetlosti)    : 0.0268
+Najmanja razlika izmedju foldova ima skup  : B) izabrani (5)
+
+NALAZ: uklanjanje svetlosti znacajno obara rezultat. To govori da
+svetlosni atributi nose vaznu prediktivnu informaciju u ovom skupu
+podataka, bez obzira na povezanost sa sesijom.
+=> Zadrzavamo zakljucak da je svetlost korisna.
+
+OGRANICENJE OVE PROVERE: dva folda i mali broj epizoda znace da su sve
+razlike merene sa velikom nesigurnoscu. Nalaz je pokazatelj, ne dokaz.
+
+NAPOMENA: test skup nije koriscen. Konacan skup atributa i konacan
+model nisu izabrani.

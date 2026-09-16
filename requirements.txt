@@ -1,0 +1,10 @@
+# Projekat je razvijan i testiran na Python 3.14.4
+# Navedene su minimalne verzije; u zagradi verzija koriscena tokom razvoja.
+
+pandas>=2.0          # (razvijano na 3.0.5)
+numpy>=1.24          # (razvijano na 2.5.2)
+scikit-learn>=1.3    # (razvijano na 1.9.0)
+matplotlib>=3.7      # (razvijano na 3.11.1)
+xgboost>=2.0         # (razvijano na 3.4.1)
+joblib>=1.3          # (razvijano na 1.6.0)
+streamlit>=1.30      # (razvijano na 1.62.0) - potreban samo za app/app.py

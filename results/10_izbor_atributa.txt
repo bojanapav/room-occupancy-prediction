@@ -1,0 +1,204 @@
+ODABIR NAJZNACAJNIJIH ATRIBUTA
+Faza 8 - development skup; zakljucani test se ne ucitava
+
+Development     : 6608 redova, sesije [0, 1, 4, 5, 7]
+Pocetni atributi: 16 senzorskih
+Vremenski atributi NE ucestvuju (faza 6b: ne poboljsavaju generalizaciju)
+CV              : usvojena podela, grupa = sesija_id, 2 folda
+
+==============================================================================
+1. ZNACAJ ATRIBUTA (usrednjeno preko foldova)
+==============================================================================
+dt_impurity : smanjenje necistoce u podesenom stablu (trening deo folda)
+dt_permutac : pad macro F1 kad se atribut permutuje (validacioni deo folda)
+rf_impurity : smanjenje necistoce u Random Forest-u (trening deo folda)
+
+              dt_impurity  dt_permutac  rf_impurity
+atribut                                            
+S2_Light           0.2227       0.2365       0.1970
+S1_Light           0.4095       0.3617       0.1696
+S3_Light           0.2489       0.1029       0.1290
+S4_Light           0.0043      -0.0144       0.0950
+S2_Temp            0.0000       0.0000       0.0860
+S3_Temp            0.0000       0.0000       0.0760
+S5_CO2             0.0000       0.0000       0.0752
+S1_Temp            0.0000       0.0000       0.0725
+S5_CO2_Slope       0.1082      -0.0052       0.0278
+S4_Temp            0.0000       0.0000       0.0237
+S1_Sound           0.0000       0.0000       0.0175
+S2_Sound           0.0064       0.0327       0.0142
+S3_Sound           0.0000       0.0000       0.0104
+S4_Sound           0.0000       0.0000       0.0052
+S7_PIR             0.0000       0.0000       0.0008
+S6_PIR             0.0000       0.0000       0.0001
+
+Atributa sa znacajem vecim od nule u stablu: 6 od 16
+Podeseno stablo ima max_depth=3, pa fizicki ne moze koristiti vise od 7
+atributa. Zato se za rangiranje SVIH 16 koristi rf_impurity, a stablo i
+permutaciona mera sluze kao provera slaganja.
+
+Slaganje poredaka (Spearman):
+  rf_impurity vs dt_impurity : 0.617
+  rf_impurity vs dt_permutac : 0.343
+
+==============================================================================
+2. PROVERA HIPOTEZE O SVETLOSNIM ATRIBUTIMA
+==============================================================================
+U EDA je uocena hipoteza da je svetlost povezana sa sesijom i dobom dana,
+a ne samo sa brojem osoba. Ako je tacna, svetlosni atributi bi trebalo da
+dominiraju rangiranjem znacaja.
+
+Mesto svetlosnih atributa u poretku po rf_impurity:
+   1. S2_Light    rf_impurity = 0.1970   dt_impurity = 0.2227
+   2. S1_Light    rf_impurity = 0.1696   dt_impurity = 0.4095
+   3. S3_Light    rf_impurity = 0.1290   dt_impurity = 0.2489
+   4. S4_Light    rf_impurity = 0.0950   dt_impurity = 0.0043
+
+Udeo svetlosti u ukupnom znacaju (RandomForest) :  59.1 %
+Udeo svetlosti u ukupnom znacaju (stablo)       :  88.5 %
+Za poredjenje, cetiri od 16 atributa cine        :  25.0 %
+
+NALAZ: svetlosni atributi nose natprosecan deo znacaja.
+
+Ovo je i dalje samo pokazatelj, ne dokaz. Rangiranje ne razdvaja da li
+svetlost nosi informaciju o broju osoba ili o tome koja je sesija u
+pitanju. Nijedan atribut se na osnovu ovoga NE uklanja - odluka se
+donosi po CV rezultatu u nastavku.
+
+==============================================================================
+3. PERFORMANSE U ZAVISNOSTI OD BROJA ATRIBUTA
+==============================================================================
+Model: DecisionTree sa hiperparametrima iz faze 7
+  {'class_weight': 'balanced', 'criterion': 'entropy', 'max_depth': 3, 'min_samples_leaf': 5, 'min_samples_split': 2}
+Atributi se dodaju redom po rf_impurity, od najznacajnijeg.
+
+ k  F1_fold1  F1_fold2  F1_prosek  bal_acc  razlika_foldova dodat_atribut
+ 1    0.5156    0.5793     0.5474   0.5308           0.0637      S2_Light
+ 2    0.4168    0.6698     0.5433   0.5296           0.2530      S1_Light
+ 3    0.5936    0.6983     0.6459   0.7052           0.1046      S3_Light
+ 4    0.5982    0.7031     0.6507   0.7188           0.1050      S4_Light
+ 5    0.7116    0.7031     0.7074   0.7420           0.0085       S2_Temp
+ 6    0.7116    0.7102     0.7109   0.7468           0.0015       S3_Temp
+ 7    0.7134    0.7102     0.7118   0.7665           0.0033        S5_CO2
+ 8    0.7116    0.7031     0.7074   0.7420           0.0085       S1_Temp
+ 9    0.4231    0.7102     0.5666   0.6434           0.2871  S5_CO2_Slope
+10    0.6113    0.6983     0.6548   0.7120           0.0870       S4_Temp
+11    0.6531    0.7031     0.6781   0.7547           0.0501      S1_Sound
+12    0.4703    0.6983     0.5843   0.6393           0.2280      S2_Sound
+13    0.6529    0.7510     0.7019   0.7693           0.0982      S3_Sound
+14    0.6660    0.7102     0.6881   0.7429           0.0441      S4_Sound
+15    0.4495    0.6983     0.5739   0.6261           0.2487        S7_PIR
+16    0.6688    0.7206     0.6947   0.7462           0.0518        S6_PIR
+
+Atributi po redosledu dodavanja:
+   1. S2_Light
+   2. S1_Light
+   3. S3_Light
+   4. S4_Light
+   5. S2_Temp
+   6. S3_Temp
+   7. S5_CO2
+   8. S1_Temp
+   9. S5_CO2_Slope
+  10. S4_Temp
+  11. S1_Sound
+  12. S2_Sound
+  13. S3_Sound
+  14. S4_Sound
+  15. S7_PIR
+  16. S6_PIR
+
+==============================================================================
+4. IZBOR SKUPA ATRIBUTA
+==============================================================================
+Najbolji prosecni macro F1: 0.7118 pri k = 7
+
+Pravilo 1 standardne greske (INFORMATIVNO):
+  SE procenjena iz 2 folda = 0.0016
+  prag = 0.7118 - 0.0016 = 0.7102
+  k koji zadovoljavaju prag: [6, 7]
+
+  OGRANICENJE: SE je ovde izracunata iz svega dve vrednosti, pa je
+  procena nepouzdana. Zato se 1-SE NE koristi kao jedini kriterijum.
+
+Primenjeni kriterijum:
+  najmanji k ciji je prosecni macro F1 unutar 0.02 od najboljeg
+  (0.6918) i cija razlika izmedju foldova nije bitno losija
+  od najboljeg k (0.0033 + 0.05)
+
+  IZABRANO: k = 5
+
+Izabrani atributi:
+  1. S2_Light
+  2. S1_Light
+  3. S3_Light
+  4. S4_Light
+  5. S2_Temp
+
+==============================================================================
+5. POREĐENJE: SVI ATRIBUTI vs IZABRANI ATRIBUTI
+==============================================================================
+              atributa  F1_fold1  F1_fold2  F1_prosek  bal_acc  accuracy  vreme_s
+svi (16)          16.0    0.6794    0.7031     0.6913   0.7583    0.8838    0.007
+izabrani (5)       5.0    0.7116    0.7031     0.7074   0.7420    0.8903    0.004
+
+Metrike po klasama:
+
+svi (16)
+       precision  recall     f1  uzoraka
+klasa                                   
+0          0.965   0.954  0.960     5316
+1          0.574   0.994  0.728      331
+2          0.924   0.497  0.646      608
+3          0.323   0.414  0.363      353
+
+izabrani (5)
+       precision  recall     f1  uzoraka
+klasa                                   
+0          0.942   0.972  0.957     5316
+1          0.730   0.873  0.795      331
+2          0.924   0.497  0.646      608
+3          0.369   0.414  0.390      353
+
+==============================================================================
+6. ZAKLJUCAK
+==============================================================================
+Razlika u prosecnom macro F1 (izabrani - svi): +0.0161
+
+Podskup od 5 atributa zadrzava performanse.
+=> KANDIDAT ZA KONACAN MODEL.
+
+Sto se tice fizickog sistema: ako manji broj senzorskih velicina
+daje prakticno isti rezultat, sistem se moze pojednostaviti.
+
+NAPOMENA: test skup nije koriscen. Konacan model nije izabran niti
+eksportovan - to je sledeca faza, posle potvrde.
+
+==============================================================================
+7. STRUKTURA STABLA NA IZABRANIM ATRIBUTIMA
+==============================================================================
+Stablo je fitovano na CELOM development skupu samo radi prikaza
+pravila. Ocene performansi iznad dolaze iskljucivo iz CV-a.
+
+|--- S1_Light <= 92.00
+|   |--- S2_Temp <= 25.84
+|   |   |--- S3_Light <= 51.50
+|   |   |   |--- class: 0
+|   |   |--- S3_Light >  51.50
+|   |   |   |--- class: 0
+|   |--- S2_Temp >  25.84
+|   |   |--- S1_Light <= 1.00
+|   |   |   |--- class: 0
+|   |   |--- S1_Light >  1.00
+|   |   |   |--- class: 3
+|--- S1_Light >  92.00
+|   |--- S3_Light <= 76.50
+|   |   |--- S2_Light <= 111.50
+|   |   |   |--- class: 1
+|   |   |--- S2_Light >  111.50
+|   |   |   |--- class: 2
+|   |--- S3_Light >  76.50
+|   |   |--- S3_Light <= 181.50
+|   |   |   |--- class: 2
+|   |   |--- S3_Light >  181.50
+|   |   |   |--- class: 3

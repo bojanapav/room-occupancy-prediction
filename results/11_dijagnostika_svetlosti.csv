@@ -1,0 +1,4 @@
+skup,atributa,F1_fold1,F1_fold2,F1_prosek,razlika_foldova,bal_acc,accuracy
+A) svi senzori (16),16,0.6794,0.7031,0.6913,0.0237,0.7583,0.8838
+B) izabrani (5),5,0.7116,0.7031,0.7074,0.0085,0.742,0.8903
+C) bez svetlosti (12),12,0.4004,0.4272,0.4138,0.0268,0.5543,0.8368

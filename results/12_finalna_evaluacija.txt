@@ -1,0 +1,168 @@
+KONACNA EVALUACIJA NA ZAKLJUCANOM TEST SKUPU
+Faza 9 - jedino mesto u projektu gde se test ucitava
+
+==============================================================================
+1. ZAKLJUCANA KONFIGURACIJA
+==============================================================================
+Odluka je doneta iskljucivo na development skupu, pre gledanja testa.
+
+Model      : DecisionTreeClassifier
+Atributi   : 5 - ['S2_Light', 'S1_Light', 'S3_Light', 'S4_Light', 'S2_Temp']
+Hiperparametri (nadjeni GridSearchCV-om u fazi 7):
+  class_weight         = balanced
+  criterion            = entropy
+  max_depth            = 3
+  min_samples_leaf     = 5
+  min_samples_split    = 2
+
+Trening: CEO development skup, 6608 redova, sesije [0, 1, 4, 5, 7]
+
+==============================================================================
+2. TEST SKUP
+==============================================================================
+Redova : 3518
+Sesije : [2, 6]
+Period : 2017-12-22 13:08:03  ->  2017-12-26 09:10:01
+
+            redova  procenat_%  epizoda
+broj_osoba                             
+0             2912       82.77        2
+1              128        3.64        1
+2              140        3.98        3
+3              338        9.61        4
+
+==============================================================================
+3. REZULTATI NA TESTU
+==============================================================================
+Accuracy                      : 0.8761
+macro F1  (glavna metrika)    : 0.6491
+Balanced accuracy             : 0.6737
+Macro recall                  : 0.6737
+
+  Balanced accuracy i macro recall su ista velicina za viseklasni
+  slucaj - prosek odziva po klasama. Navedeni su oba jer ih
+  specifikacija trazi pod oba imena.
+
+==============================================================================
+4. METRIKE PO KLASAMA
+==============================================================================
+         precision  recall     f1  uzoraka
+klasa                                     
+0 osoba      1.000   0.954  0.977     2912
+1 osoba      1.000   0.961  0.980      128
+2 osobe      0.210   0.421  0.280      140
+3 osobe      0.361   0.358  0.360      338
+
+Matrica konfuzije (redovi = stvarna klasa, kolone = predvidjena):
+           pred. 0  pred. 1  pred. 2  pred. 3
+stvarno 0     2779        0        0      133
+stvarno 1        0      123        5        0
+stvarno 2        0        0       59       81
+stvarno 3        0        0      217      121
+
+==============================================================================
+5. ANALIZA GRESAKA
+==============================================================================
+A) Najcesce zamene klasa:
+ stvarna  predvidjena  broj  udeo_klase_%
+       3            2   217          64.2
+       0            3   133           4.6
+       2            3    81          57.9
+       1            2     5           3.9
+
+Ukupno gresaka: 436 od 3518 (12.4 %)
+
+B) Greske po test sesiji:
+           redova  gresaka  stopa_%
+sesija_id                          
+2             739      436     59.0
+6            2779        0      0.0
+
+  Sesija 2 sadrzi sve cetiri klase; sesija 6 je 24 h prazne prostorije.
+
+C) Greske po epizodi (samo epizode sa bar jednom greskom):
+            stvarna_klasa  redova  gresaka  stopa_%
+epizoda_id                                         
+17                      3     227      217     95.6
+14                      0     133      133    100.0
+16                      2     121       62     51.2
+10                      2      17       17    100.0
+15                      1     128        5      3.9
+12                      2       2        2    100.0
+
+  TUMACENJE: greske su koncentrisane u nekoliko citavih ili gotovo
+  citavih epizoda, a ne rasute po celom test skupu. To pokazuje
+  vremensku zavisnost uzoraka: kada model pogresi na jednom delu
+  epizode, po pravilu gresi i na ostatku iste epizode, jer su
+  susedna merenja gotovo identicna. Zbog toga ukupan broj pogresnih
+  redova precenjuje koliko je razlicitih situacija model promasio.
+
+D) Senzorski profil najcesce zamene (3 -> 2):
+              pogresno (217 redova)  tacno (121 redova)
+S2_Light                     236.00              253.00
+S1_Light                     149.00              164.00
+S3_Light                     180.00              272.00
+S4_Light                      10.00               70.00
+S2_Temp                       26.63               27.31
+S5_CO2                      1095.00              910.00
+S5_CO2_Slope                   2.20                1.51
+S6_PIR                         1.00                1.00
+S7_PIR                         1.00                1.00
+
+  Prikazane su medijane. Kolone iznad linije su atributi koje model
+  zaista koristi; ispod su CO2 i PIR, koje model NE koristi - stoje
+  radi uvida da li je informacija o gresci postojala u drugim senzorima.
+
+==============================================================================
+6. POREĐENJE SA DEVELOPMENT CV REZULTATOM
+==============================================================================
+Iskljucivo radi diskusije o generalizaciji. Nista se ne menja.
+
+                   development CV  test (sesije 2 i 6)  razlika
+macro F1                   0.7074               0.6491  -0.0583
+balanced accuracy          0.7420               0.6737  -0.0683
+accuracy                   0.8903               0.8761  -0.0142
+
+macro F1 po CV foldovima: [0.7116, 0.7031]
+
+Kako citati razliku: test i development se razlikuju i po raspodeli
+klasa. Test je 82.8% prazne prostorije, blizu celog skupa, dok
+development ima 80.5%. Precision zavisi od te raspodele, pa se
+ne prenosi direktno; recall po klasi ne zavisi od prevalence, ali
+zavisi od toga koliko su uzorci te klase u testu reprezentativni.
+
+==============================================================================
+7. STRUKTURA KONACNOG STABLA
+==============================================================================
+|--- S1_Light <= 92.00
+|   |--- S2_Temp <= 25.84
+|   |   |--- S3_Light <= 51.50
+|   |   |   |--- class: 0
+|   |   |--- S3_Light >  51.50
+|   |   |   |--- class: 0
+|   |--- S2_Temp >  25.84
+|   |   |--- S1_Light <= 1.00
+|   |   |   |--- class: 0
+|   |   |--- S1_Light >  1.00
+|   |   |   |--- class: 3
+|--- S1_Light >  92.00
+|   |--- S3_Light <= 76.50
+|   |   |--- S2_Light <= 111.50
+|   |   |   |--- class: 1
+|   |   |--- S2_Light >  111.50
+|   |   |   |--- class: 2
+|   |--- S3_Light >  76.50
+|   |   |--- S3_Light <= 181.50
+|   |   |   |--- class: 2
+|   |   |--- S3_Light >  181.50
+|   |   |   |--- class: 3
+
+
+==============================================================================
+8. NAPOMENE
+==============================================================================
+- Test skup je koriscen samo u fazi konacne evaluacije i nikada za
+  razvojne odluke.
+- Posle gledanja testa nije menjan ni model, ni atributi, ni
+  hiperparametri, ni podela.
+- Model jos nije eksportovan; deployment je sledeca faza.

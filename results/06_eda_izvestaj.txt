@@ -1,0 +1,295 @@
+EKSPLORATIVNA ANALIZA (EDA)
+Faza 4 - iskljucivo na DEVELOPMENT skupu; test se ne ucitava
+
+Redova u analizi : 6608
+Sesije           : [0, 1, 4, 5, 7]
+Epizoda          : 22
+Atributa (senzori): 16
+
+==============================================================================
+1. RASPODELA KLASA U DEVELOPMENT SKUPU
+==============================================================================
+            redova  procenat_%  epizoda
+broj_osoba                             
+0             5316       80.45        4
+1              331        5.01        4
+2              608        9.20        9
+3              353        5.34        5
+
+ZAKLJUCAK: prazna soba cini vecinu razvojnog skupa. Zbog toga tacnost
+nije dovoljna metrika - glavni kriterijum je macro F1, uz balanced
+accuracy i metrike po klasama.
+
+[grafik] 01_raspodela_klasa.png
+
+==============================================================================
+2. RASPODELE NUMERICKIH ATRIBUTA
+==============================================================================
+                   count        mean         std         min         25%         50%         75%         max  nunique  asimetrija
+S1_Temp         6608.000      25.442       0.345      24.940      25.190      25.310      25.690      26.310       23       0.840
+S2_Temp         6608.000      25.534       0.562      24.750      25.190      25.310      25.690      29.000       69       2.170
+S3_Temp         6608.000      25.002       0.417      24.440      24.630      24.880      25.310      26.060       27       0.690
+S4_Temp         6608.000      25.673       0.341      25.060      25.380      25.630      25.880      26.500       24       0.460
+S1_Light        6608.000      24.097      50.661       0.000       0.000       0.000       7.000     163.000       59       1.850
+S2_Light        6608.000      23.175      64.772       0.000       0.000       0.000       7.000     254.000       72       3.000
+S3_Light        6608.000      26.105      49.737       0.000       0.000       0.000      33.000     225.000      136       2.350
+S4_Light        6608.000      10.291      17.145       0.000       0.000       0.000      17.000      68.000       69       1.650
+S1_Sound        6608.000       0.167       0.310       0.060       0.070       0.070       0.080       3.880      193       5.550
+S2_Sound        6608.000       0.123       0.274       0.040       0.050       0.050       0.060       3.440      162       6.890
+S3_Sound        6608.000       0.133       0.321       0.040       0.060       0.060       0.070       3.660      180       7.390
+S4_Sound        6608.000       0.091       0.103       0.050       0.060       0.070       0.090       3.400       84      13.910
+S5_CO2          6608.000     462.109     186.445     345.000     355.000     365.000     495.000    1255.000      170       1.870
+S5_CO2_Slope    6608.000      -0.093       1.192      -5.535      -0.135       0.000       0.000       5.138     1371      -0.090
+S6_PIR          6608.000       0.090       0.287       0.000       0.000       0.000       0.000       1.000        2       2.860
+S7_PIR          6608.000       0.071       0.256       0.000       0.000       0.000       0.000       1.000        2       3.360
+
+ZAPAZANJA:
+  S1_Light  :  63.8% merenja je tacno 0 (mrak)
+  S2_Light  :  63.8% merenja je tacno 0 (mrak)
+  S3_Light  :  61.6% merenja je tacno 0 (mrak)
+  S4_Light  :  61.7% merenja je tacno 0 (mrak)
+  => Senzori svetlosti imaju veliku masu u nuli; raspodela je
+     dvomodalna (mrak / upaljeno svetlo), a ne zvonasta.
+
+  S1_Sound  : medijana 0.07, maksimum 3.88  (odnos max/medijana = 55x)
+  S2_Sound  : medijana 0.05, maksimum 3.44  (odnos max/medijana = 69x)
+  S3_Sound  : medijana 0.06, maksimum 3.66  (odnos max/medijana = 61x)
+  S4_Sound  : medijana 0.07, maksimum 3.40  (odnos max/medijana = 49x)
+  => Zvuk je izrazito desno asimetrican: tisina uz retke kratke skokove.
+
+[grafik] 02_raspodele_atributa.png
+
+==============================================================================
+3. ANOMALIJE, EKSTREMNE I CUDNE VREDNOSTI
+==============================================================================
+A) Temperature - poredjenje cetiri senzora:
+             min      50%      max      std    opseg
+S1_Temp    24.94    25.31    26.31     0.35     1.37
+S2_Temp    24.75    25.31    29.00     0.56     4.25
+S3_Temp    24.44    24.88    26.06     0.42     1.62
+S4_Temp    25.06    25.63    26.50     0.34     1.44
+
+  S2_Temp ima maksimum 29.00 C, dok nijedan drugi
+  temperaturni senzor ne prelazi 26.50 C.
+  Moguce objasnjenje: taj cvor je blize izvoru toplote ili osobama.
+  Vrednost je fizicki moguca za zatvorenu prostoriju, pa se NE uklanja.
+
+B) Broj ekstrema po IQR pravilu (informativno, nista se ne brise):
+  S1_Temp            0  ( 0.00 %)
+  S2_Temp          448  ( 6.78 %)
+  S3_Temp            0  ( 0.00 %)
+  S4_Temp            0  ( 0.00 %)
+  S1_Light        1109  (16.78 %)
+  S2_Light        1110  (16.80 %)
+  S3_Light         500  ( 7.57 %)
+  S4_Light         647  ( 9.79 %)
+  S1_Sound        1215  (18.39 %)
+  S2_Sound        1167  (17.66 %)
+  S3_Sound        1117  (16.90 %)
+  S4_Sound         562  ( 8.50 %)
+  S5_CO2           842  (12.74 %)
+  S5_CO2_Slope    2288  (34.62 %)
+  S6_PIR           598  ( 9.05 %)  (IQR=0, raspodela koncentrisana u jednoj vrednosti)
+  S7_PIR           466  ( 7.05 %)  (IQR=0, raspodela koncentrisana u jednoj vrednosti)
+
+  VAZNO: kod senzora ekstremna vrednost najcesce znaci da se dogadjaj
+  stvarno desio (upaljeno svetlo, ulazak osobe, zvuk). To je signal koji
+  model treba da nauci, a ne sum - zato se ekstremi zadrzavaju.
+
+C) Kratke epizode (moguce nepreciznosti u obelezavanju):
+            klasa  redova
+epizoda_id               
+4               1       2
+31              3       2
+7               2       3
+
+  Ukupno 3 epizoda traje najvise 5 merenja (~2.5 min).
+  To su verovatno trenuci ulaska/izlaska. NE uklanjaju se bez dogovora -
+  ako se ukloni epizoda, menja se i podela podataka.
+
+==============================================================================
+4. KORELACIJE IZMEDJU ATRIBUTA
+==============================================================================
+[grafik] 03_korelaciona_matrica.png
+
+15 najjacih korelacija:
+atribut_A atribut_B      r    |r|
+  S1_Temp   S3_Temp  0.968  0.968
+  S1_Temp   S4_Temp  0.913  0.913
+  S3_Temp   S4_Temp  0.866  0.866
+  S1_Temp    S5_CO2  0.851  0.851
+  S3_Temp    S5_CO2  0.847  0.847
+ S1_Light  S2_Light  0.826  0.826
+ S1_Light  S3_Light  0.794  0.794
+  S1_Temp   S2_Temp  0.787  0.787
+  S2_Temp   S4_Temp  0.769  0.769
+  S2_Temp   S3_Temp  0.760  0.760
+  S4_Temp    S5_CO2  0.727  0.727
+ S3_Sound  S4_Sound  0.701  0.701
+ S1_Light  S4_Light  0.643  0.643
+  S2_Temp    S5_CO2  0.636  0.636
+ S2_Light  S3_Light  0.612  0.612
+
+==============================================================================
+5. KORELACIJE UNUTAR GRUPA SENZORA
+==============================================================================
+Pitanje: da li cetiri senzora iste vrste mere prakticno istu stvar?
+
+Temperatura (S1_Temp, S2_Temp, S3_Temp, S4_Temp):
+         S1_Temp  S2_Temp  S3_Temp  S4_Temp
+S1_Temp    1.000    0.787    0.968    0.913
+S2_Temp    0.787    1.000    0.760    0.769
+S3_Temp    0.968    0.760    1.000    0.866
+S4_Temp    0.913    0.769    0.866    1.000
+  prosecna korelacija van dijagonale: 0.844
+  opseg: 0.760 do 0.968
+
+Svetlost (S1_Light, S2_Light, S3_Light, S4_Light):
+          S1_Light  S2_Light  S3_Light  S4_Light
+S1_Light     1.000     0.826     0.794     0.643
+S2_Light     0.826     1.000     0.612     0.571
+S3_Light     0.794     0.612     1.000     0.522
+S4_Light     0.643     0.571     0.522     1.000
+  prosecna korelacija van dijagonale: 0.661
+  opseg: 0.522 do 0.826
+
+Zvuk (S1_Sound, S2_Sound, S3_Sound, S4_Sound):
+          S1_Sound  S2_Sound  S3_Sound  S4_Sound
+S1_Sound     1.000     0.536     0.487     0.565
+S2_Sound     0.536     1.000     0.416     0.571
+S3_Sound     0.487     0.416     1.000     0.701
+S4_Sound     0.565     0.571     0.701     1.000
+  prosecna korelacija van dijagonale: 0.546
+  opseg: 0.416 do 0.701
+
+[grafik] 04_korelacije_grupa.png
+
+==============================================================================
+6. ODNOS S5_CO2 I S5_CO2_Slope
+==============================================================================
+Pearsonova korelacija: r = -0.117
+
+S5_CO2_Slope je brzina promene koncentracije, dakle izvod S5_CO2 po
+vremenu. Nivo i njegov izvod nose razlicitu informaciju: nivo govori
+koliko se CO2 nakupilo, a nagib da li se bas sada nakuplja ili opada.
+Niska korelacija potvrdjuje da NISU redundantni.
+
+Po klasama:
+                      CO2_medijana  CO2_max  Slope_medijana  Slope_prosek
+Room_Occupancy_Count                                                     
+0                            360.0     1255           0.000        -0.413
+1                            415.0      560           0.300         0.465
+2                            645.0     1065           1.087         1.099
+3                            705.0     1050           2.196         2.155
+
+ZAPAZANJE: u development skupu medijane i S5_CO2 i S5_CO2_Slope
+monotono rastu kroz klase 0 -> 1 -> 2 -> 3. To je opis ovog skupa
+podataka, ne tvrdnja o ponasanju senzora uopste.
+
+[grafik] 05_co2_i_nagib.png
+
+==============================================================================
+7. PONASANJE PIR SENZORA
+==============================================================================
+PIR detektuje pokret, ne prisustvo. Osoba koja mirno sedi ga ne aktivira.
+
+            S6_PIR_aktivan_%  S7_PIR_aktivan_%  bar_jedan_%
+broj_osoba                                                 
+0                        0.2               0.2          0.2
+1                       36.9               4.5         37.8
+2                       48.8              36.3         59.7
+3                       47.9              62.9         73.1
+
+S6_PIR i S7_PIR daju istu vrednost u 93.1% merenja.
+Korelacija izmedju njih: r = 0.542
+
+U samo 0.2% merenja prazne prostorije bio je aktivan
+bar jedan PIR senzor. Drugim recima, PIR pokazuje veoma visoku
+specificnost za praznu prostoriju - lazna detekcija je retka.
+
+Obrnuto, u 42.3% merenja sa bar jednom osobom oba PIR
+senzora su bila mirna. PIR reaguje na pokret, ne na prisustvo, pa osoba
+koja mirno sedi ostaje nezapazena.
+
+ZAKLJUCAK: PIR je pouzdan pokazatelj da NEKO jeste u sobi, ali sam ne
+moze da razlikuje 1, 2 ili 3 osobe. Ocekujemo da modelu bude koristan
+za odvajanje prazno/zauzeto, a ne za brojanje.
+
+[grafik] 06_pir_po_klasama.png
+
+==============================================================================
+8. RAZLIKE ATRIBUTA IZMEDJU KLASA 0, 1, 2, 3
+==============================================================================
+Medijana svakog atributa po klasi:
+Room_Occupancy_Count         0         1         2         3
+S1_Temp                 25.250    25.630    26.000    25.810
+S2_Temp                 25.250    25.380    26.130    26.130
+S3_Temp                 24.810    25.190    25.630    25.750
+S4_Temp                 25.560    26.000    26.250    25.940
+S1_Light                 0.000   122.000   146.000    10.000
+S2_Light                 0.000    35.000   231.000    13.000
+S3_Light                 0.000    58.000    85.500    56.000
+S4_Light                 0.000    44.000    20.000    16.000
+S1_Sound                 0.070     0.390     0.530     0.290
+S2_Sound                 0.050     0.110     0.410     0.320
+S3_Sound                 0.060     0.100     0.285     0.180
+S4_Sound                 0.060     0.070     0.170     0.100
+S5_CO2                 360.000   415.000   645.000   705.000
+S5_CO2_Slope             0.000     0.300     1.087     2.196
+S6_PIR                   0.000     0.000     0.000     0.000
+S7_PIR                   0.000     0.000     0.000     1.000
+
+Opisna mera razdvojivosti (udeo varijanse objasnjen klasom, eta^2):
+NAPOMENA: ovo je samo opis podataka za EDA, NE izbor atributa.
+                eta2
+atribut             
+S1_Light      0.8744
+S3_Light      0.6359
+S2_Light      0.5712
+S7_PIR        0.4335
+S1_Temp       0.4078
+S6_PIR        0.3987
+S3_Temp       0.3838
+S4_Light      0.3823
+S1_Sound      0.3790
+S4_Temp       0.3566
+S2_Sound      0.3558
+S5_CO2_Slope  0.3511
+S2_Temp       0.3323
+S5_CO2        0.2806
+S3_Sound      0.2499
+S4_Sound      0.2305
+
+ZAPAZANJE: medijane svetlosti nisu monotone po broju osoba.
+Room_Occupancy_Count        0        1        2        3
+S1_Light                  0.0    122.0    146.0     10.0
+S2_Light                  0.0     35.0    231.0     13.0
+S3_Light                  0.0     58.0     85.5     56.0
+S4_Light                  0.0     44.0     20.0     16.0
+
+Kod vise senzora klasa 3 ima NIZU medijanu svetlosti od klasa 1 i 2.
+
+HIPOTEZA (nije potvrdjena i ne menja preprocesiranje):
+  Moguce objasnjenje je da su epizode klase 3 u razvojnom skupu
+  snimane kasno popodne i uvece, pa je izmerena svetlost povezana sa
+  sesijom i dobom dana, a ne samo sa brojem osoba. Ako je tako, visok
+  eta^2 kod svetlosti delom odrazava koja je epizoda u pitanju.
+
+  Ovo je zasad SAMO pretpostavka. Proverava se kasnije - poredjenjem
+  modela sa vremenskim atributima i bez njih, vaznoscu atributa i
+  analizom gresaka. Nijedan atribut se na osnovu ovoga ne uklanja.
+
+[grafik] 07_atributi_po_klasama.png
+
+==============================================================================
+9. POTENCIJALNO REDUNDANTNI ATRIBUTI
+==============================================================================
+Kriterijum: |r| >= 0.9
+
+atribut_A atribut_B      r    |r|
+  S1_Temp   S3_Temp  0.968  0.968
+  S1_Temp   S4_Temp  0.913  0.913
+
+VAZNO: ovo je samo SPISAK KANDIDATA, ne odluka. Nijedan atribut se
+sada ne uklanja. Odabir najznacajnijih atributa je posebna faza
+projekta i radi se propisanim metodama, na trening podacima.

@@ -1,0 +1,5 @@
+klasa,precision,recall,f1,uzoraka
+0 osoba,1.0,0.954,0.977,2912
+1 osoba,1.0,0.961,0.98,128
+2 osobe,0.21,0.421,0.28,140
+3 osobe,0.361,0.358,0.36,338

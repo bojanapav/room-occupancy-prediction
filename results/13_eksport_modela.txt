@@ -1,0 +1,65 @@
+EKSPORT KONACNOG MODELA
+Faza 10a - deployment
+
+==============================================================================
+1. TRENING
+==============================================================================
+Model se trenira na CELOM development skupu - isti podaci i ista
+konfiguracija kao model evaluiran na testu u fazi 9.
+
+  Redova    : 6608
+  Sesije    : [0, 1, 4, 5, 7]
+  Period    : 2017-12-22 10:49:41 -> 2018-01-11 09:00:09
+  Atributi  : ['S2_Light', 'S1_Light', 'S3_Light', 'S4_Light', 'S2_Temp']
+
+  Test skup NIJE ukljucen u trening.
+
+==============================================================================
+2. SADRZAJ EKSPORTOVANOG PAKETA
+==============================================================================
+  atributi        : ['S2_Light', 'S1_Light', 'S3_Light', 'S4_Light', 'S2_Temp']
+  klase           : [0, 1, 2, 3]
+  hiperparametri  : {'class_weight': 'balanced', 'criterion': 'entropy', 'max_depth': 3, 'min_samples_leaf': 5, 'min_samples_split': 2}
+  opsezi          : min/max/medijana za svaki atribut (koristi ih UI)
+  metapodaci      : 6 polja
+
+Opsezi iz trening podataka:
+            min    max  medijana  decimala
+S2_Light   0.00  254.0      0.00       0.0
+S1_Light   0.00  163.0      0.00       0.0
+S3_Light   0.00  225.0      0.00       0.0
+S4_Light   0.00   68.0      0.00       0.0
+S2_Temp   24.75   29.0     25.31       2.0
+
+Snimljeno: models/finalni_model.joblib
+Velicina : 3.9 KB
+
+==============================================================================
+3. PROVERA UCITAVANJA I PREDIKCIJE
+==============================================================================
+  [OK] model se ucitava
+  [OK] redosled atributa sacuvan
+  [OK] klase su 0-3
+  [OK] hiperparametri sacuvani
+  [OK] ucitani model daje identicne predikcije
+  [OK] predikcija jednog reda (kao u aplikaciji) radi
+  [OK] pogresan redosled menja rezultat (dokaz da redosled znaci)
+  [OK] model odbija DataFrame sa pogresnim redosledom kolona
+
+SVE PROVERE PROSLE
+
+Primer predikcije:
+  ulaz  = {'S2_Light': 34.0, 'S1_Light': 121.0, 'S3_Light': 53.0, 'S4_Light': 40.0, 'S2_Temp': 24.75}
+  izlaz = 1 osoba
+
+==============================================================================
+4. KAKO SE MODEL KORISTI
+==============================================================================
+  import joblib, pandas as pd
+  paket = joblib.load('models/finalni_model.joblib')
+  red = pd.DataFrame([vrednosti], columns=paket['atributi'])
+  broj_osoba = paket['model'].predict(red)[0]
+
+  Prosledjivanje DataFrame-a sa imenima kolona je bezbednije od golog
+  niza: sklearn tada sam proverava da li se redosled poklapa sa
+  treningom i javlja gresku ako se ne poklapa.

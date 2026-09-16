@@ -1,0 +1,271 @@
+PREGLED SIROVOG DATASETA - Room Occupancy Estimation
+Faza 2 projekta: ucitavanje i provera podataka (bez izmena)
+
+==============================================================================
+1. OSNOVNE INFORMACIJE
+==============================================================================
+Putanja fajla : data/raw/Occupancy_Estimation.csv
+Broj redova   : 10129
+Broj kolona   : 20
+Zauzece u RAM : 1.72 MB
+
+Nazivi kolona:
+   1. Date
+   2. Time
+   3. S1_Temp
+   4. S2_Temp
+   5. S3_Temp
+   6. S4_Temp
+   7. S1_Light
+   8. S2_Light
+   9. S3_Light
+  10. S4_Light
+  11. S1_Sound
+  12. S2_Sound
+  13. S3_Sound
+  14. S4_Sound
+  15. S5_CO2
+  16. S5_CO2_Slope
+  17. S6_PIR
+  18. S7_PIR
+  19. Room_Occupancy_Count
+  20. Timestamp
+
+Ocekivane kolone iz specifikacije - provera:
+  Nedostaju : nema
+  Visak     : ['Timestamp']
+
+==============================================================================
+2. TIPOVI PODATAKA I BROJ JEDINSTVENIH VREDNOSTI
+==============================================================================
+                                 tip  non_null  nunique               primer
+Date                             str     10129        7           2017/12/22
+Time                             str     10129    10129             10:49:41
+S1_Temp                      float64     10129       24                24.94
+S2_Temp                      float64     10129       69                24.75
+S3_Temp                      float64     10129       29                24.56
+S4_Temp                      float64     10129       27                25.38
+S1_Light                       int64     10129       68                  121
+S2_Light                       int64     10129       82                   34
+S3_Light                       int64     10129      177                   53
+S4_Light                       int64     10129       75                   40
+S1_Sound                     float64     10129      231                 0.08
+S2_Sound                     float64     10129      185                 0.19
+S3_Sound                     float64     10129      258                 0.06
+S4_Sound                     float64     10129      106                 0.06
+S5_CO2                         int64     10129      186                  390
+S5_CO2_Slope                 float64     10129     1579             0.769231
+S6_PIR                         int64     10129        2                    0
+S7_PIR                         int64     10129        2                    0
+Room_Occupancy_Count           int64     10129        4                    1
+Timestamp             datetime64[us]     10129    10129  2017-12-22 10:49:41
+
+==============================================================================
+3. PRVIH 5 I POSLEDNJIH 5 REDOVA
+==============================================================================
+         Date      Time  S1_Temp  S2_Temp  S3_Temp  S4_Temp  S1_Light  S2_Light  S3_Light  S4_Light  S1_Sound  S2_Sound  S3_Sound  S4_Sound  S5_CO2  S5_CO2_Slope  S6_PIR  S7_PIR  Room_Occupancy_Count           Timestamp
+0  2017/12/22  10:49:41    24.94    24.75    24.56    25.38       121        34        53        40      0.08      0.19      0.06      0.06     390      0.769231       0       0                     1 2017-12-22 10:49:41
+1  2017/12/22  10:50:12    24.94    24.75    24.56    25.44       121        33        53        40      0.93      0.05      0.06      0.06     390      0.646154       0       0                     1 2017-12-22 10:50:12
+2  2017/12/22  10:50:42    25.00    24.75    24.50    25.44       121        34        53        40      0.43      0.11      0.08      0.06     390      0.519231       0       0                     1 2017-12-22 10:50:42
+3  2017/12/22  10:51:13    25.00    24.75    24.56    25.44       121        34        53        40      0.41      0.10      0.10      0.09     390      0.388462       0       0                     1 2017-12-22 10:51:13
+4  2017/12/22  10:51:44    25.00    24.75    24.56    25.44       121        34        54        40      0.18      0.06      0.06      0.06     390      0.253846       0       0                     1 2017-12-22 10:51:44
+...
+             Date      Time  S1_Temp  S2_Temp  S3_Temp  S4_Temp  S1_Light  S2_Light  S3_Light  S4_Light  S1_Sound  S2_Sound  S3_Sound  S4_Sound  S5_CO2  S5_CO2_Slope  S6_PIR  S7_PIR  Room_Occupancy_Count           Timestamp
+10124  2018/01/11  08:58:07    25.06    25.13    24.69    25.31         6         7        33        22      0.09      0.04      0.06      0.08     345           0.0       0       0                     0 2018-01-11 08:58:07
+10125  2018/01/11  08:58:37    25.06    25.06    24.69    25.25         6         7        34        22      0.07      0.05      0.05      0.08     345           0.0       0       0                     0 2018-01-11 08:58:37
+10126  2018/01/11  08:59:08    25.13    25.06    24.69    25.25         6         7        34        22      0.11      0.05      0.06      0.08     345           0.0       0       0                     0 2018-01-11 08:59:08
+10127  2018/01/11  08:59:39    25.13    25.06    24.69    25.25         6         7        34        22      0.08      0.08      0.10      0.08     345           0.0       0       0                     0 2018-01-11 08:59:39
+10128  2018/01/11  09:00:09    25.13    25.06    24.69    25.25         6         7        34        22      0.08      0.05      0.06      0.08     345           0.0       0       0                     0 2018-01-11 09:00:09
+
+==============================================================================
+4. NEDOSTAJUCE VREDNOSTI
+==============================================================================
+Nema nedostajucih vrednosti ni u jednoj koloni.
+=> Imputacija nije potrebna. Ne uvodimo vestacke NaN vrednosti
+   samo da bi 'postojao' preprocessing.
+
+Prazni stringovi u tekstualnim kolonama: nema
+
+==============================================================================
+5. DUPLIKATI
+==============================================================================
+Potpuno identicni redovi (sve kolone)        : 0
+Identicna merenja bez Date/Time              : 1301
+
+TUMACENJE:
+  Potpuni duplikat bi znacio dva reda sa istim vremenom -> greska u
+  logovanju. Ponovljena senzorska ocitavanja BEZ vremena su, medjutim,
+  potpuno normalna za vremensku seriju: dok se u sobi nista ne desava,
+  senzori vracaju iste brojeve. Takvi redovi NISU duplikati i ne
+  smeju se brisati - nose informaciju o trajanju stanja.
+
+==============================================================================
+6. DESKRIPTIVNA STATISTIKA NUMERICKIH ATRIBUTA
+==============================================================================
+                    count         mean          std          min          25%          50%          75%          max  nunique
+S1_Temp         10129.000       25.454        0.351       24.940       25.190       25.380       25.630       26.380       24
+S2_Temp         10129.000       25.546        0.586       24.750       25.190       25.380       25.630       29.000       69
+S3_Temp         10129.000       25.057        0.427       24.440       24.690       24.940       25.380       26.190       29
+S4_Temp         10129.000       25.754        0.356       24.940       25.440       25.750       26.000       26.560       27
+S1_Light        10129.000       25.445       51.011        0.000        0.000        0.000       12.000      165.000       68
+S2_Light        10129.000       26.016       67.304        0.000        0.000        0.000       14.000      258.000       82
+S3_Light        10129.000       34.248       58.401        0.000        0.000        0.000       50.000      280.000      177
+S4_Light        10129.000       13.220       19.602        0.000        0.000        0.000       22.000       74.000       75
+S1_Sound        10129.000        0.168        0.317        0.060        0.070        0.080        0.080        3.880      231
+S2_Sound        10129.000        0.120        0.267        0.040        0.050        0.050        0.060        3.440      185
+S3_Sound        10129.000        0.158        0.414        0.040        0.060        0.060        0.070        3.670      258
+S4_Sound        10129.000        0.104        0.121        0.050        0.060        0.080        0.100        3.400      106
+S5_CO2          10129.000      460.860      199.965      345.000      355.000      360.000      465.000     1270.000      186
+S5_CO2_Slope    10129.000       -0.005        1.165       -6.296       -0.046        0.000        0.000        8.981     1579
+S6_PIR          10129.000        0.090        0.286        0.000        0.000        0.000        0.000        1.000        2
+S7_PIR          10129.000        0.080        0.271        0.000        0.000        0.000        0.000        1.000        2
+
+Rasponi po grupama senzora:
+  Temperatura :     24.440  ...      29.000
+  Svetlost    :      0.000  ...     280.000
+  Zvuk        :      0.040  ...       3.880
+  CO2         :     -6.296  ...    1270.000
+  PIR         :      0.000  ...       1.000
+
+=> Razliciti opsezi (npr. CO2 u stotinama ppm, zvuk oko 0-4) znace
+   da ce logistickoj regresiji trebati skaliranje. Stabla ga ne trazе.
+
+==============================================================================
+7. RASPODELA CILJNE PROMENLJIVE
+==============================================================================
+            broj_uzoraka  procenat_%
+broj_osoba                          
+0                   8228       81.23
+1                    459        4.53
+2                    748        7.38
+3                    694        6.85
+
+Jedinstvene vrednosti targeta: [0, 1, 2, 3]
+Odnos najbrojnija / najredja klasa: 17.9 : 1
+
+TUMACENJE:
+  Najzastupljenija klasa cini 81.2% podataka. To znaci da
+  model koji uvek predvidja tu klasu dobija ~81.2% accuracy
+  bez ikakvog znanja. Zato accuracy sam po sebi nije dovoljna metrika -
+  glavni kriterijum ce biti macro F1 (jednaka tezina svim klasama).
+
+==============================================================================
+8. ANALIZA KOLONA DATE I TIME
+==============================================================================
+Tip kolone Date: str   primer: '2017/12/22'
+Tip kolone Time: str   primer: '10:49:41'
+Broj razlicitih datuma: 7
+Datumi: ['2017/12/22', '2017/12/23', '2017/12/24', '2017/12/25', '2017/12/26', '2018/01/10', '2018/01/11']
+
+Neuspesno parsiranih vremena: 0
+
+ZAKLJUCAK:
+  Date i Time su tekstualne kolone. U sirovom obliku NE ulaze u model -
+  string '2017/12/22' modelu ne znaci nista, a numericki kodiran datum
+  bi bio identifikator dana eksperimenta, ne fizicka velicina.
+  Da li iz njih izvesti vremenske atribute (npr. sat u danu) proveravamo
+  eksperimentalno u kasnijoj fazi, poredjenjem modela sa i bez njih.
+
+==============================================================================
+9. VREMENSKA STRUKTURA (osnova za odluku o podeli podataka)
+==============================================================================
+Da li su redovi hronoloski sortirani: True
+Duplirani vremenski pecati          : 0
+Prvo merenje : 2017-12-22 10:49:41
+Zadnje merenje: 2018-01-11 09:00:09
+
+Razmak izmedju uzastopnih merenja (sekunde):
+count          10128.0
+mean             170.0
+std            13129.6
+min               30.0
+25%               30.0
+50%               31.0
+75%               31.0
+max          1318547.0
+
+Deklarisani period uzorkovanja iz opisa dataseta: 30 s
+Medijana stvarnog razmaka                       : 31.0 s
+
+Broj prekida snimanja (razmak > 120 s): 7
+Najveci prekidi (kraj -> nastavak snimanja):
+  2017-12-26 09:10:01  ->  2018-01-10 15:25:48   (  366.26 h)
+  2017-12-24 09:10:50  ->  2017-12-25 09:11:42   (   24.01 h)
+  2017-12-22 12:42:31  ->  2017-12-22 13:08:03   (    0.43 h)
+  2017-12-22 19:32:00  ->  2017-12-22 19:35:35   (    0.06 h)
+  2017-12-22 19:36:36  ->  2017-12-22 19:39:40   (    0.05 h)
+  2017-12-22 11:36:39  ->  2017-12-22 11:39:13   (    0.04 h)
+  2017-12-23 16:37:44  ->  2017-12-23 16:40:18   (    0.04 h)
+
+ZASTO JE OVO KLJUCNO:
+  Merenja su ~30 s razmaka, pa su susedni redovi gotovo identicni.
+  Nasumicna podela (shuffle=True) bi rasporedila skoro iste redove i u
+  trening i u test, pa bi model 'prepoznavao' vec vidjene trenutke.
+  Rezultat bi bio lazno visok (blizu 100%) i metodoloski neispravan.
+
+==============================================================================
+10. RASPORED KLASA KROZ VREME (da li je hronoloska podela moguca)
+==============================================================================
+Pregled po danima:
+            merenja        od        do  max_osoba  udeo_prazno_pct
+datum                                                              
+2017-12-22     1462  10:49:41  23:59:33          3             43.6
+2017-12-23     2779  00:00:34  23:59:54          3             71.9
+2017-12-24     1064  00:00:56  09:10:50          0            100.0
+2017-12-25     1716  09:11:42  23:59:36          0            100.0
+2017-12-26     1063  00:00:37  09:10:01          0            100.0
+2018-01-10      997  15:25:48  23:59:58          3             70.5
+2018-01-11     1048  00:00:28  09:00:09          0            100.0
+
+Broj uzoraka po klasi za svaki dan:
+Room_Occupancy_Count     0    1    2    3
+datum                                    
+2017-12-22             637  205  257  363
+2017-12-23            1997  254  398  130
+2017-12-24            1064    0    0    0
+2017-12-25            1716    0    0    0
+2017-12-26            1063    0    0    0
+2018-01-10             703    0   93  201
+2018-01-11            1048    0    0    0
+
+PROBNA PROVERA - da uzmemo poslednjih 20% redova kao test skup:
+  Klase u tom delu : [0, 2, 3]
+  Sve klase u datasetu: [0, 1, 2, 3]
+  => PROBLEM: klase [1] ne postoje u tom test skupu.
+     Naivna hronoloska podela bi bila neupotrebljiva za evaluaciju.
+     U fazi 5 trazimo bolju strategiju (npr. podela po blokovima /
+     sesijama, ili GroupKFold po danu) i obrazlazemo je.
+
+==============================================================================
+11. PROVERA NELOGICNIH I EKSTREMNIH VREDNOSTI
+==============================================================================
+A) Vrednosti van fizicki ocekivanog opsega:
+  Nema vrednosti van ocekivanih fizickih opsega.
+
+B) Konstantne kolone (nula informacije za model):
+  nema
+
+C) Binarni senzori - stvarne vrednosti:
+  S6_PIR: vrednosti=[0, 1]   udeo aktivnih=9.0%
+  S7_PIR: vrednosti=[0, 1]   udeo aktivnih=8.0%
+
+D) Broj ekstremnih vrednosti po IQR pravilu (informativno):
+   VAZNO: ovo NIJE lista za brisanje. Kod senzora ekstremna vrednost
+   najcesce znaci da se nesto stvarno desilo (upaljeno svetlo, ulazak
+   osobe), a to je bas signal koji model treba da nauci.
+  S1_Temp            162  ( 1.60 %)
+  S2_Temp            948  ( 9.36 %)
+  S3_Temp              0  ( 0.00 %)
+  S4_Temp              0  ( 0.00 %)
+  S1_Light          1716  (16.94 %)
+  S2_Light          1017  (10.04 %)
+  S3_Light           950  ( 9.38 %)
+  S4_Light           543  ( 5.36 %)
+  S1_Sound          1772  (17.49 %)
+  S2_Sound          1703  (16.81 %)
+  S3_Sound          1671  (16.50 %)
+  S4_Sound           721  ( 7.12 %)
+  S5_CO2            1657  (16.36 %)
+  S5_CO2_Slope      4033  (39.82 %)
+  S6_PIR             913  ( 9.01 %) (IQR=0)
+  S7_PIR             806  ( 7.96 %) (IQR=0)

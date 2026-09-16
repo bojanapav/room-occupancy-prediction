@@ -1,0 +1,87 @@
+USVOJENA PODELA PODATAKA
+Faza 5: test = cele sesije [2, 6], development = ostale sesije
+
+==============================================================================
+1. PRAVILO PODELE
+==============================================================================
+  Test sesije      : [2, 6]
+  Purge margina    : 5 min oko test sesije
+
+  Test vremenski opseg: 2017-12-22 13:08:03  ->  2017-12-26 09:10:01
+
+  Obrazlozenje: obe test sesije ostaju CELE, pa nijedna epizoda nije
+  razdvojena. Sesija 2 jedina sama sadrzi sve cetiri klase; sesija 6
+  je jedna duga epizoda prazne sobe (24h) pa test dobija realan udeo
+  klase 0. Sesija 5 ostaje u developmentu jer nosi veliku epizodu
+  klase 3 (130 redova) pored one od 199 redova iz sesije 7.
+
+==============================================================================
+2. KONACNA RASPODELA
+==============================================================================
+             redova  %_dataseta  kl0_redova  kl1_redova  kl2_redova  kl3_redova  kl0_epiz  kl1_epiz  kl2_epiz  kl3_epiz
+skup                                                                                                                   
+development    6608        65.2        5316         331         608         353         4         4         9         5
+test           3518        34.7        2912         128         140         338         2         1         3         4
+purge             3         0.0           0           0           0           3         0         0         0         1
+
+Sesije po skupovima:
+  development : [0, 1, 4, 5, 7]
+  test        : [2, 6]
+  purge       : [3]
+
+Epizoda razdvojenih izmedju development i test: 0 []
+
+Purge - koji redovi su izbaceni i zasto:
+  3 redova iz sesija [3]
+  Vremenski opseg: 2017-12-22 19:35:35 -> 2017-12-22 19:36:36
+  Klase: {3: 3}
+
+==============================================================================
+3. PROVERA 2-FOLD StratifiedGroupKFold (grupa = sesija)
+==============================================================================
+Development skup: 6608 redova
+Sesije u developmentu: [0, 1, 4, 5, 7]
+Broj grupa (sesija)  : 5
+Broj foldova         : 2
+
+Klasa 1 po sesijama u developmentu:
+           redova  epizoda
+sesija_id                 
+0              75        1
+1               2        1
+4             254        2
+
+--------------------------------------------------------------------------
+FOLD 1
+--------------------------------------------------------------------------
+  Sesije u VALIDACIJI: [4, 5]
+  Sesije u TRENINGU  : [0, 1, 7]
+  Redova validacija / trening: 4347 / 2261
+
+       val_redova  val_epizoda  train_redova upotrebljivo
+klasa                                                    
+0            3565            3          1751           DA
+1             254            2            77           DA
+2             398            3           210           DA
+3             130            1           223           DA
+
+--------------------------------------------------------------------------
+FOLD 2
+--------------------------------------------------------------------------
+  Sesije u VALIDACIJI: [0, 1, 7]
+  Sesije u TRENINGU  : [4, 5]
+  Redova validacija / trening: 2261 / 4347
+
+       val_redova  val_epizoda  train_redova upotrebljivo
+klasa                                                    
+0            1751            1          3565           DA
+1              77            2           254           DA
+2             210            6           398           DA
+3             223            4           130           DA
+
+==========================================================================
+ZAKLJUCAK: svaki fold smisleno evaluira sve cetiri klase.
+Moze se nastaviti na EDA i modeliranje.
+==========================================================================
+
+Podela snimljena: data/processed/podela.csv

@@ -1,0 +1,110 @@
+PREPROCESIRANJE - Room Occupancy Estimation
+Faza 3 projekta: enkodiranje i priprema obradjenog skupa
+
+==============================================================================
+1. ODLUKE O CISCENJU PODATAKA
+==============================================================================
+Sve odluke slede iz nalaza faze 2 - nista se ne radi 'za svaki slucaj'.
+
+  Nedostajuce vrednosti  : 0  -> imputacija NIJE potrebna
+  Potpuni duplikati      : 0  -> nema sta da se ukloni
+  Ponovljena ocitavanja  : 1301 (12.8%) -> ZADRZANI
+      Razlog: to je prazna soba u kojoj se stanje ne menja. Brisanje bi
+      uklonilo informaciju o tome koliko dugo je stanje trajalo i
+      vestacki promenilo raspodelu klasa.
+  Ekstremne vrednosti    : ZADRZANE
+      Razlog: nijedna nije van fizicki mogucih opsega. Kod senzora skok
+      u svetlosti ili zvuku znaci da se dogadjaj stvarno desio - to je
+      bas signal koji model treba da nauci, a ne sum.
+
+  => Nijedan red se ne uklanja u ovoj fazi.
+
+==============================================================================
+2. ENKODIRANJE
+==============================================================================
+A) Ciljna promenljiva Room_Occupancy_Count
+   Vec je ceo broj: [0, 1, 2, 3]
+   => LabelEncoder nije potreban; klase su spremne za sklearn.
+
+B) PIR senzori S6_PIR, S7_PIR
+   Vec binarni 0/1. => One-hot enkodiranje nema smisla.
+
+C) Kategorijske kolone
+   Ne postoje - svi senzorski atributi su numericki.
+
+D) Date i Time (tekstualne kolone) -> vremenski atributi
+   minut_u_danu    opseg [0.000, 1439.000]
+   sat             opseg [0.000, 23.000]
+   dan_u_nedelji   opseg [0.000, 6.000]
+   vikend          opseg [0.000, 1.000]
+   minut_sin       opseg [-1.000, 1.000]
+   minut_cos       opseg [-1.000, 1.000]
+   minut_sin i minut_cos: ciklicno kodiranje doba dana, da bi 23:59 i
+   00:00 bili blizu jedan drugom, a ne na suprotnim krajevima skale.
+
+==============================================================================
+3. UKLONJENI ATRIBUTI
+==============================================================================
+  Date  - tekst; zamenjen izvedenim vremenskim atributima
+  Time  - tekst; zamenjen izvedenim vremenskim atributima
+
+  Timestamp se ZADRZAVA u fajlu, ali kao meta-podatak za podelu i
+  crtanje grafika - NE kao ulaz u model.
+
+==============================================================================
+4. VREMENSKE GRUPE ZA PODELU BEZ CURENJA PODATAKA
+==============================================================================
+  Prag za novu sesiju : razmak > 120 s
+  Duzina bloka        : 30 min
+  Broj sesija snimanja: 8
+  Broj blokova        : 179
+  Broj kalendarskih dana: 7
+
+Sesije snimanja:
+                           od                  do  redova         klase
+sesija_id                                                              
+0         2017-12-22 10:49:41 2017-12-22 11:36:39      92        [1, 2]
+1         2017-12-22 11:39:13 2017-12-22 12:42:31     124     [1, 2, 3]
+2         2017-12-22 13:08:03 2017-12-22 19:32:00     739  [0, 1, 2, 3]
+3         2017-12-22 19:35:35 2017-12-22 19:36:36       3           [3]
+4         2017-12-22 19:39:40 2017-12-23 16:37:44    2432     [0, 1, 2]
+5         2017-12-23 16:40:18 2017-12-24 09:10:50    1915     [0, 2, 3]
+6         2017-12-25 09:11:42 2017-12-26 09:10:01    2779           [0]
+7         2018-01-10 15:25:48 2018-01-11 09:00:09    2045     [0, 2, 3]
+
+Koliko blokova sadrzi bar jedan uzorak date klase:
+  klasa 0:  146 blokova od ukupno 179
+  klasa 1:   12 blokova od ukupno 179
+  klasa 2:   20 blokova od ukupno 179
+  klasa 3:   20 blokova od ukupno 179
+
+  Ovo je ulaz za fazu 5: pokazuje da li blok-podela moze da obezbedi
+  sve cetiri klase u svakom od skupova train/val/test.
+
+==============================================================================
+5. SKALIRANJE - ZASTO GA OVDE NEMA
+==============================================================================
+  StandardScaler uci srednju vrednost i standardnu devijaciju IZ podataka.
+  Kada bismo ga fitovali sada, na celom skupu, statistika test podataka
+  bi usla u transformaciju trening podataka => curenje informacija.
+
+  Zato skaliranje ide u sklearn Pipeline (faza 6), fitovano samo na
+  trening delu, i to samo za modele kojima treba (logisticka regresija).
+  Stablima (Decision Tree, Random Forest, XGBoost) skaliranje ne treba,
+  jer dele podatke po pragovima i monotone transformacije ih ne menjaju.
+
+==============================================================================
+6. REZULTAT
+==============================================================================
+  Redova pre obrade  : 10129
+  Redova posle obrade: 10129   (razlika: 0)
+  Kolona u izlazu    : 27
+
+  Meta-kolone (4): ['Timestamp', 'datum', 'sesija_id', 'blok_id']
+  Senzorski atributi (16): ['S1_Temp', 'S2_Temp', 'S3_Temp', 'S4_Temp', 'S1_Light', 'S2_Light', 'S3_Light', 'S4_Light', 'S1_Sound', 'S2_Sound', 'S3_Sound', 'S4_Sound', 'S5_CO2', 'S5_CO2_Slope', 'S6_PIR', 'S7_PIR']
+  Vremenski atributi (6): ['minut_u_danu', 'sat', 'dan_u_nedelji', 'vikend', 'minut_sin', 'minut_cos']
+  Ciljna promenljiva: Room_Occupancy_Count
+
+  Provera NaN u izlazu: 0
+
+  Snimljeno: data/processed/occupancy_processed.csv

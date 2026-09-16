@@ -1,0 +1,2 @@
+accuracy,macro_F1,balanced_accuracy,macro_recall,cv_macro_F1,cv_balanced_accuracy,cv_accuracy
+0.8761,0.6491,0.6737,0.6737,0.7074,0.742,0.8903

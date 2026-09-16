@@ -1,0 +1,128 @@
+POREĐENJE: SA VREMENSKIM ATRIBUTIMA I BEZ NJIH
+Faza 6b - isti uslovi kao pocetno poredjenje
+
+Development : 6608 redova, sesije [0, 1, 4, 5, 7]
+Test skup   : ZAKLJUCAN, nije ucitan
+CV          : StratifiedGroupKFold, grupa = sesija_id, 2 folda
+
+  senzori        (16 atributa)
+  senzori+vreme  (22 atributa)
+
+  Dodati vremenski atributi: ['minut_u_danu', 'sat', 'dan_u_nedelji', 'vikend', 'minut_sin', 'minut_cos']
+
+==============================================================================
+1. REZULTATI PO FOLDOVIMA
+==============================================================================
+             model      postavka      atributi  F1_fold1  F1_fold2  F1_prosek  bal_acc  accuracy  vreme_s
+LogisticRegression podrazumevano       senzori    0.5187    0.6733     0.5960   0.5816    0.8502     0.05
+LogisticRegression podrazumevano senzori+vreme    0.4895    0.6733     0.5814   0.6248    0.8384     0.06
+      DecisionTree podrazumevano       senzori    0.5811    0.6011     0.5911   0.7052    0.8432     0.01
+      DecisionTree podrazumevano senzori+vreme    0.5233    0.4000     0.4616   0.5824    0.7860     0.01
+      RandomForest podrazumevano       senzori    0.5393    0.6786     0.6089   0.6724    0.8465     0.29
+      RandomForest podrazumevano senzori+vreme    0.3862    0.6158     0.5010   0.5193    0.8189     0.32
+           XGBoost podrazumevano       senzori    0.5199    0.6505     0.5852   0.6156    0.8586     0.31
+           XGBoost podrazumevano senzori+vreme    0.4824    0.5889     0.5356   0.5432    0.8399     0.25
+LogisticRegression      balanced       senzori    0.5003    0.6708     0.5856   0.6049    0.8428     0.10
+LogisticRegression      balanced senzori+vreme    0.3267    0.6708     0.4988   0.5645    0.6861     0.09
+      DecisionTree      balanced       senzori    0.5376    0.7281     0.6329   0.6914    0.8816     0.01
+      DecisionTree      balanced senzori+vreme    0.7588    0.5043     0.6315   0.7012    0.8708     0.01
+      RandomForest      balanced       senzori    0.5918    0.7080     0.6499   0.6685    0.8761     0.29
+      RandomForest      balanced senzori+vreme    0.4149    0.6701     0.5425   0.5997    0.8386     0.31
+           XGBoost      balanced       senzori    0.4789    0.6119     0.5454   0.5670    0.8370     0.33
+           XGBoost      balanced senzori+vreme    0.4137    0.5930     0.5034   0.5256    0.8113     0.24
+
+==============================================================================
+2. RAZLIKA (senzori+vreme MINUS senzori)
+==============================================================================
+Pozitivna vrednost znaci da su vremenski atributi pomogli.
+Kolona 'dosledno' kaze da li su pomogli u OBA folda.
+
+             model      postavka  delta_fold1  delta_fold2  delta_prosek        dosledno
+LogisticRegression podrazumevano      -0.0292       0.0000       -0.0146   NE (suprotno)
+      DecisionTree podrazumevano      -0.0578      -0.2011       -0.1295 NE (oba losija)
+      RandomForest podrazumevano      -0.1531      -0.0628       -0.1079 NE (oba losija)
+           XGBoost podrazumevano      -0.0375      -0.0616       -0.0496 NE (oba losija)
+LogisticRegression      balanced      -0.1736       0.0000       -0.0868   NE (suprotno)
+      DecisionTree      balanced       0.2212      -0.2238       -0.0014   NE (suprotno)
+      RandomForest      balanced      -0.1769      -0.0379       -0.1074 NE (oba losija)
+           XGBoost      balanced      -0.0652      -0.0189       -0.0420 NE (oba losija)
+
+Vremenski atributi podigli prosek kod 0 od 8 kombinacija.
+Pomogli su u OBA folda kod 0 od 8 kombinacija.
+
+==============================================================================
+3. F1 PO KLASAMA - oba skupa atributa
+==============================================================================
+
+LogisticRegression [podrazumevano]
+       senzori  senzori+vreme  razlika
+klasa                                 
+0        0.960          0.928   -0.032
+1        0.654          0.436   -0.218
+2        0.542          0.681    0.139
+3        0.099          0.073   -0.026
+
+DecisionTree [podrazumevano]
+       senzori  senzori+vreme  razlika
+klasa                                 
+0        0.935          0.912   -0.023
+1        0.583          0.376   -0.207
+2        0.612          0.558   -0.054
+3        0.259          0.171   -0.088
+
+RandomForest [podrazumevano]
+       senzori  senzori+vreme  razlika
+klasa                                 
+0        0.944          0.944    0.000
+1        0.465          0.344   -0.121
+2        0.630          0.474   -0.156
+3        0.261          0.049   -0.212
+
+XGBoost [podrazumevano]
+       senzori  senzori+vreme  razlika
+klasa                                 
+0        0.960          0.960    0.000
+1        0.557          0.580    0.023
+2        0.569          0.470   -0.099
+3        0.174          0.053   -0.121
+
+LogisticRegression [balanced]
+       senzori  senzori+vreme  razlika
+klasa                                 
+0        0.951          0.780   -0.171
+1        0.511          0.246   -0.265
+2        0.535          0.506   -0.029
+3        0.162          0.073   -0.089
+
+DecisionTree [balanced]
+       senzori  senzori+vreme  razlika
+klasa                                 
+0        0.968          0.968    0.000
+1        0.550          0.565    0.015
+2        0.708          0.495   -0.213
+3        0.251          0.467    0.216
+
+RandomForest [balanced]
+       senzori  senzori+vreme  razlika
+klasa                                 
+0        0.969          0.954   -0.015
+1        0.707          0.304   -0.403
+2        0.636          0.517   -0.119
+3        0.225          0.206   -0.019
+
+XGBoost [balanced]
+       senzori  senzori+vreme  razlika
+klasa                                 
+0        0.953          0.937   -0.016
+1        0.514          0.387   -0.127
+2        0.484          0.462   -0.022
+3        0.111          0.056   -0.055
+
+==============================================================================
+4. ZAKLJUCAK
+==============================================================================
+Vremenski atributi uglavnom NE pomazu. Preporuka je zadrzati
+skup od 16 senzorskih atributa.
+
+NAPOMENA: ovo je nalaz, ne usvojena odluka. Skup atributa se bira
+tek posle potvrde.

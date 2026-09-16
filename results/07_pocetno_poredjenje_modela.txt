@@ -1,0 +1,155 @@
+POCETNO POREĐENJE MODELA
+Faza 6 - osnovne verzije, bez podesavanja hiperparametara
+
+Development skup : 6608 redova, sesije [0, 1, 4, 5, 7]
+Test skup        : ZAKLJUCAN, nije ucitan
+Atributa u modelu: 16
+  ['S1_Temp', 'S2_Temp', 'S3_Temp', 'S4_Temp', 'S1_Light', 'S2_Light', 'S3_Light', 'S4_Light', 'S1_Sound', 'S2_Sound', 'S3_Sound', 'S4_Sound', 'S5_CO2', 'S5_CO2_Slope', 'S6_PIR', 'S7_PIR']
+
+Vremenski atributi (sat, dan u nedelji...) NISU ukljuceni u ovoj fazi.
+Poredjenje sa njima i bez njih je zaseban eksperiment iz specifikacije.
+
+==============================================================================
+1. SASTAV CV FOLDOVA
+==============================================================================
+Usvojeni CV: StratifiedGroupKFold, grupa = sesija_id, 2 folda
+  Fold 1: validacija sesije [4, 5] (4347 redova) | trening sesije [0, 1, 7] (2261 redova)
+           klase u validaciji: {0: 3565, 1: 254, 2: 398, 3: 130}
+  Fold 2: validacija sesije [0, 1, 7] (2261 redova) | trening sesije [4, 5] (4347 redova)
+           klase u validaciji: {0: 1751, 1: 77, 2: 210, 3: 223}
+
+==============================================================================
+2. REZULTATI PO MODELIMA
+==============================================================================
+Glavna metrika: macro F1 (svaka klasa nosi istu tezinu).
+Prikazane su dve pocetne postavke - podrazumevana i class_weight='balanced'.
+
+                    model      postavka  macroF1_fold1  macroF1_fold2  macroF1_prosek  balanced_acc  accuracy  vreme_s
+             RandomForest      balanced         0.5918         0.7080          0.6499        0.6685    0.8761     0.30
+             DecisionTree      balanced         0.5376         0.7281          0.6329        0.6914    0.8816     0.01
+             RandomForest podrazumevano         0.5393         0.6786          0.6089        0.6724    0.8465     0.29
+       LogisticRegression podrazumevano         0.5187         0.6733          0.5960        0.5816    0.8502     0.08
+             DecisionTree podrazumevano         0.5811         0.6011          0.5911        0.7052    0.8432     0.01
+       LogisticRegression      balanced         0.5003         0.6708          0.5856        0.6049    0.8428     0.09
+                  XGBoost podrazumevano         0.5199         0.6505          0.5852        0.6156    0.8586     0.38
+                  XGBoost      balanced         0.4789         0.6119          0.5454        0.5670    0.8370     0.35
+Baseline (najcesca klasa) podrazumevano         0.2253         0.2182          0.2218        0.2500    0.7973     0.00
+
+Napomena o razlici izmedju foldova: fold 1 validira sesije 4 i 5, a
+fold 2 sesije 0, 1 i 7. To su razliciti dani i razlicita osvetljenja,
+pa velika razlika izmedju foldova govori da model slabo generalizuje
+na novu sesiju - a ne da je CV los.
+
+==============================================================================
+3. METRIKE PO KLASAMA (objedinjene out-of-fold predikcije)
+==============================================================================
+Svaki red developmenta dobio je predikciju modela koji njegovu sesiju
+nije video. Dva folda su komplementarna, pa je pokriven ceo skup.
+
+--------------------------------------------------------------------------
+Baseline (najcesca klasa) [podrazumevano]
+--------------------------------------------------------------------------
+       precision  recall     f1  uzoraka
+klasa                                   
+0          0.804     1.0  0.892     5316
+1          0.000     0.0  0.000      331
+2          0.000     0.0  0.000      608
+3          0.000     0.0  0.000      353
+  macro F1 = 0.2229   balanced acc = 0.2500   accuracy = 0.8045
+
+--------------------------------------------------------------------------
+LogisticRegression [podrazumevano]
+--------------------------------------------------------------------------
+       precision  recall     f1  uzoraka
+klasa                                   
+0          0.965   0.954  0.960     5316
+1          0.760   0.574  0.654      331
+2          0.696   0.444  0.542      608
+3          0.074   0.150  0.099      353
+  macro F1 = 0.5637   balanced acc = 0.5305   accuracy = 0.8449
+
+--------------------------------------------------------------------------
+DecisionTree [podrazumevano]
+--------------------------------------------------------------------------
+       precision  recall     f1  uzoraka
+klasa                                   
+0          0.963   0.908  0.935     5316
+1          0.457   0.804  0.583      331
+2          0.893   0.465  0.612      608
+3          0.195   0.385  0.259      353
+  macro F1 = 0.5970   balanced acc = 0.6405   accuracy = 0.8340
+
+--------------------------------------------------------------------------
+RandomForest [podrazumevano]
+--------------------------------------------------------------------------
+       precision  recall     f1  uzoraka
+klasa                                   
+0          0.964   0.924  0.944     5316
+1          0.404   0.550  0.465      331
+2          0.892   0.487  0.630      608
+3          0.193   0.399  0.261      353
+  macro F1 = 0.5749   balanced acc = 0.5900   accuracy = 0.8370
+
+--------------------------------------------------------------------------
+XGBoost [podrazumevano]
+--------------------------------------------------------------------------
+       precision  recall     f1  uzoraka
+klasa                                   
+0          0.965   0.955  0.960     5316
+1          0.543   0.571  0.557      331
+2          0.766   0.452  0.569      608
+3          0.135   0.244  0.174      353
+  macro F1 = 0.5648   balanced acc = 0.5556   accuracy = 0.8518
+
+--------------------------------------------------------------------------
+LogisticRegression [balanced]
+--------------------------------------------------------------------------
+       precision  recall     f1  uzoraka
+klasa                                   
+0          0.965   0.938  0.951     5316
+1          0.444   0.601  0.511      331
+2          0.739   0.419  0.535      608
+3          0.125   0.229  0.162      353
+  macro F1 = 0.5397   balanced acc = 0.5470   accuracy = 0.8354
+
+--------------------------------------------------------------------------
+DecisionTree [balanced]
+--------------------------------------------------------------------------
+       precision  recall     f1  uzoraka
+klasa                                   
+0          0.966   0.971  0.968     5316
+1          0.915   0.393  0.550      331
+2          0.910   0.579  0.708      608
+3          0.186   0.385  0.251      353
+  macro F1 = 0.6191   balanced acc = 0.5820   accuracy = 0.8748
+
+--------------------------------------------------------------------------
+RandomForest [balanced]
+--------------------------------------------------------------------------
+       precision  recall     f1  uzoraka
+klasa                                   
+0          0.966   0.972  0.969     5316
+1          0.989   0.550  0.707      331
+2          0.858   0.505  0.636      608
+3          0.168   0.340  0.225      353
+  macro F1 = 0.6339   balanced acc = 0.5916   accuracy = 0.8739
+
+--------------------------------------------------------------------------
+XGBoost [balanced]
+--------------------------------------------------------------------------
+       precision  recall     f1  uzoraka
+klasa                                   
+0          0.965   0.942  0.953     5316
+1          0.464   0.577  0.514      331
+2          0.668   0.380  0.484      608
+3          0.085   0.159  0.111      353
+  macro F1 = 0.5156   balanced acc = 0.5145   accuracy = 0.8304
+
+==============================================================================
+4. NAPOMENE
+==============================================================================
+- Test skup nije koriscen ni na koji nacin.
+- Nije radjeno podesavanje hiperparametara ni izbor atributa.
+- Nijedan model jos nije izabran kao konacan.
+- StandardScaler je unutar Pipeline-a i fituje se samo na trening delu
+  svakog folda, pa statistika validacije ne ucestvuje u skaliranju.
