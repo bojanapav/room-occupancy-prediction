@@ -153,7 +153,8 @@ Po klasama:
 | 2 osobe | 0,210 | 0,421 | 0,280 | 140 |
 | 3 osobe | 0,361 | 0,358 | 0,360 | 338 |
 
-Poređenja radi, trivijalni model koji uvek predviđa praznu prostoriju postiže tačnost 0,797 uz macro F1 od samo 0,222 — zato se tačnost ne koristi kao glavna metrika.
+Tokom unakrsne validacije na razvojnom skupu, trivijalni model koji uvek predviđa najčešću klasu ostvario je tačnost 0,797 i macro F1 od 0,222. Rezultati konačnog modela prikazani u prethodnoj tabeli odnose se na zaseban test skup, pa se ove vrednosti ne porede direktno. Zbog neuravnoteženosti klasa, macro F1 je izabran kao glavna metrika.
+
 
 ## Poznata ograničenja
 
