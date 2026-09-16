@@ -599,7 +599,7 @@ def load_processed() -> pd.DataFrame:
     if not PROCESSED_CSV.exists():
         raise FileNotFoundError(
             f"Nema obradjenog skupa na {PROCESSED_CSV}. "
-            f"Pokreni prvo: python pipeline.py --faza 3"
+            f"Pokreni prvo: python pipeline.py --korak 2"
         )
     df = pd.read_csv(PROCESSED_CSV, parse_dates=["Timestamp"])
     return df
