@@ -27,34 +27,7 @@ Sadrži **10.129 merenja** prikupljenih sa **7 senzorskih čvorova**, na svakih 
 
 Atributi: 4 senzora temperature, 4 senzora svetlosti, 4 senzora zvuka, CO₂ i njegov nagib, i 2 PIR senzora pokreta, uz `Date`, `Time` i ciljnu promenljivu `Room_Occupancy_Count`.
 
-## Struktura projekta
 
-```
-Projekat_Room_Occupancy/
-├── data/
-│   ├── raw/                        sirovi CSV
-│   └── processed/                  obrađeni skup + zaključana podela
-├── models/
-│   ├── finalni_model.joblib        eksportovani konačni model
-│   └── najbolji_parametri.json     rezultati pretrage hiperparametara
-├── results/                        tekstualni izveštaji 01–13 i CSV tabele
-│   └── figures/                    12 grafika
-├── src/
-│   ├── config.py                   putanje, liste atributa, zaključana konfiguracija
-│   ├── data_preparation.py         učitavanje, pregled, preprocesiranje
-│   ├── data_split.py               epizode, podela, CV foldovi
-│   ├── eda.py                      eksplorativna analiza
-│   ├── train.py                    treniranje modela i tuning
-│   ├── feature_selection.py        odabir najznačajnijih atributa
-│   ├── evaluate.py                 konačna evaluacija na test skupu
-│   └── export_model.py             finalni trening i eksport modela
-├── app/
-│   └── app.py                      Streamlit aplikacija
-├── pipeline.py                     pokretač celog procesa
-├── requirements.txt
-├── DOKUMENTACIJA.md                detaljna dokumentacija projekta
-└── README.md
-```
 
 ## Instalacija
 
