@@ -56,23 +56,6 @@ python pipeline.py --korak 5
 python pipeline.py --spisak      # ispis svih koraka
 ```
 
-Pipeline ima 11 koraka i pokreće ih ovim redosledom:
-
-| # | Korak | Izlaz |
-|---|---|---|
-| 1 | Učitavanje i pregled dataseta | `results/01_...` |
-| 2 | Preprocesiranje i enkodiranje | `results/02_...`, `data/processed/occupancy_processed.csv` |
-| 3 | Analiza epizoda zauzetosti | `results/03_...` |
-| 4 | Finalna podela podataka i CV foldovi | `results/04_...`, `results/05_...`, `data/processed/podela.csv` |
-| 5 | EDA (samo development skup) | `results/06_...`, `results/figures/` |
-| 6 | Početno poređenje modela | `results/07_...` |
-| 7 | Poređenje: sa vremenskim atributima i bez njih | `results/08_...` |
-| 8 | Podešavanje hiperparametara | `results/09_...` |
-| 9 | Odabir najznačajnijih atributa | `results/10_...`, `results/11_...` |
-| 10 | Konačna evaluacija na zaključanom test skupu | `results/12_...` |
-| 11 | Eksport konačnog modela | `results/13_...`, `models/finalni_model.joblib` |
-
-Napomena o numeraciji: oznake **faza** u izvornom kodu i izveštajima prate redosled faza iz specifikacije projekta, dok brojevi **koraka** iznad prate redosled izvršavanja. Zbog toga se podela podataka (faza 5) izvršava kao korak 4, a EDA (faza 4) kao korak 5 — podela se namerno zaključava pre eksplorativne analize.
 
 ### Streamlit aplikacija
 
