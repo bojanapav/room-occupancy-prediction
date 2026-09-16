@@ -1,0 +1,32 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# --- Virtuelna okruzenja ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- IDE i editori ---
+.vscode/
+.idea/
+*.swp
+*~
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- Operativni sistem ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Streamlit lokalna podesavanja ---
+.streamlit/secrets.toml
+
+# NAPOMENA: folderi results/, models/ i data/ se NAMERNO ne ignorisu.
+# Izvestaji, grafici i eksportovani model su deo predatog projekta, pa
+# treba da budu vidljivi bez pokretanja pipeline-a.
