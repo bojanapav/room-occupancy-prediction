@@ -275,7 +275,7 @@ def _vremenska_struktura(r: Izvestaj, df: pd.DataFrame) -> None:
     r.p("  Merenja su ~30 s razmaka, pa su susedni redovi gotovo identicni.")
     r.p("  Nasumicna podela (shuffle=True) bi rasporedila skoro iste redove i u")
     r.p("  trening i u test, pa bi model 'prepoznavao' vec vidjene trenutke.")
-    r.p("  Rezultat bi bio lazno visok (blizu 100%) i metodoloski neispravan.")
+    r.p("  Rezultat bi mogao biti lazno visok zbog curenja informacija.")
 
 
 def _klase_kroz_vreme(r: Izvestaj, df: pd.DataFrame) -> None:
