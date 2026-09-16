@@ -201,7 +201,7 @@ ZASTO JE OVO KLJUCNO:
   Merenja su ~30 s razmaka, pa su susedni redovi gotovo identicni.
   Nasumicna podela (shuffle=True) bi rasporedila skoro iste redove i u
   trening i u test, pa bi model 'prepoznavao' vec vidjene trenutke.
-  Rezultat bi bio lazno visok (blizu 100%) i metodoloski neispravan.
+  Rezultat bi mogao biti lazno visok zbog curenja informacija.
 
 ==============================================================================
 10. RASPORED KLASA KROZ VREME (da li je hronoloska podela moguca)
