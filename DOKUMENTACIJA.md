@@ -684,7 +684,7 @@ Projekat je pokazao da je moguće proceniti zauzetost prostorije iz ambijentalni
 - unakrsna validacija koristi `sesija_id` kao grupu, pa model nikad ne vidi sesiju na kojoj se ocenjuje;
 - test skup je zaključan u kodu i korišćen samo u fazi konačne evaluacije, nikada za razvojne odluke.
 
-Cena ove strogosti je niži prijavljeni rezultat nego što bi dao nasumični split, ali je taj rezultat verodostojan.
+Podela po sesijama smanjuje rizik od curenja informacija i omogućava realističniju procenu generalizacije na nove sesije. Rezultat nasumične podele nije eksperimentalno meren.
 
 **Neočekivani nalazi.** Tri rezultata su bila suprotna očekivanjima:
 
